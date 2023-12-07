@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="">
+<head>
+  <meta charset="UTF-8">
+  <title>Story Maker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <script src="./js/bootstrap.bundle.min.js"></script>
+  <script src="./js/fontawesome.js"></script>
+  <script src="./js/axios.js"></script>
+  <script src="./js/tinymce/js/tinymce/tinymce.min.js"></script>
+  <script src="./js/main.js" defer></script>
+</head>
+<body>
+
+  <div class="position-absolute top-0 end-0 p-3">
+	<button 
+       	   id="toggle-color-btn"
+	   type="button"
+	   class="btn"
+	  onclick="toggleColorMode(this)">
+	  <i class="fa-solid fa-sun"></i>
+	</button>
+  </div>
+
+
+  <div class="container pt-5 mb-5">
+    <div class="bg-body-tertiary p-2 rounded mt-2">
+      <center>
+      <h3 class="p-2 mb-0">
+	<i class="fa-solid fa-book"></i>
+	Story Maker
+      <small class="text-body-secondary fs-5">~ Write Story Using AI</small>
+      </h3>
+      </center>
+    </div>
+  <div class="accordion pt-5" id="accordian">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+	<span>
+	Plot  <i class="fa-solid fa-pen-to-square"></i> 
+	</span>
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+        <strong>Generate a plot for your story.</strong> Example: <code>dark, sci-fi, horror, space</code>
+	<form class="d-flex mt-3" action="" method="post" name="plot_form">
+	<div class="input-group">
+	  <span class="input-group-text" id="plot-prompt">Plot</span>
+ 	 <input type="text" 
+	 class="form-control" aria-label="Plot"
+	 name="plot_prompt"
+	 aria-describedby="plot-prompt">
+	</div>
+	<button type="submit" 
+	  name="plot_btn"
+	  class="btn btn-primary ms-3">Generate</button>
+	</form>
+	<div class="mt-3">
+	 <div class="d-flex justify-content-center align-items-center visually-hidden" 
+	   id="plot-loader"
+	   >
+	   <img src="./assets/gear_loader.svg" alt="">
+	 </div>
+	 <div class="visually-hidden generated-plot-container">
+	    <button type="button" class="btn btn-secondary w-100 mb-3 text-center"
+	      onclick="copy2clipboard('generated-plot')">
+	      <i class="fa-regular fa-copy"></i>
+	      Copy</button>
+	  <div class="form-floating">
+	    <textarea class="form-control" placeholder="Generated Plot" id="generated-plot"
+	      style=""></textarea>
+	      <label for="generated-plot">Plot</label>
+	  </div>
+	   </div>
+	</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+	<span>
+	Story <i class="fa-solid fa-pen-to-square"></i> 
+	</span>
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+        <strong>Generate a Story from a Plot.</strong> Example: <code>In the year 2256, humanity has finally...</code>
+	<form class=" mt-3" action="" method="post" name="story_form">
+	  <div class="form-floating">
+	    <textarea
+		style="resize:none;"
+	       oninput="autoTextAreaResize(this)"
+	       class="form-control" placeholder="Generated Story" id="story-prompt"
+	      name="story_prompt"
+	      ></textarea>
+	      <label for="story-prompt">Story Plot</label>
+	  </div>
+	<button type="submit" 
+	  name="story_btn"
+	  class="btn btn-primary mt-3 w-100">Generate</button>
+	</form>
+	<div class="mt-3">
+	 <div class="d-flex justify-content-center align-items-center visually-hidden" 
+	   id="story-loader"
+	   >
+	   <img src="./assets/gear_loader.svg" alt="">
+	 </div>
+	 <div class="visually-hidden generated-story-container">
+	    <button type="button" class="btn btn-secondary w-100 mb-3 text-center"
+	      onclick="copy2clipboard('generated-story')">
+	      <i class="fa-regular fa-copy"></i>
+	      Copy</button>
+	  <div class="form-floating">
+	    <textarea class="form-control" placeholder="Generated Story" id="generated-story"
+	      style=""></textarea>
+	      <label for="generated-story">Story</label>
+	  </div>
+	    <button type="button" class="btn btn-secondary w-100 mt-3 mb-3 text-center"
+	      onclick="continue_story()">
+	      Continue
+	      <i class="fa-solid fa-angles-right"></i>
+	    </button>
+	   </div>
+	</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+	<span>
+	  Characters <i class="fa-solid fa-user-pen"></i>
+	</span>
+      </button>
+    </h2>
+    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+      <strong>Generate Characters using Story.</strong> Example: <code>In the year 2256, humanity has finally...</code>
+	<form class=" mt-3" action="" method="post" name="character_form">
+	  <div class="form-floating">
+	    <textarea
+		style="resize:none;"
+	       oninput="autoTextAreaResize(this)"
+	       class="form-control" placeholder="Generated Character" id="character-prompt"
+	       name="character_prompt"
+	      ></textarea>
+	      <label for="character-prompt">Character Description</label>
+	  </div>
+	<button type="submit" 
+	  name="character_btn"
+	  class="btn btn-primary mt-3 w-100">Generate</button>
+	</form>
+	<div class="mt-3">
+	 <div class="d-flex justify-content-center align-items-center visually-hidden" 
+	   id="character-loader"
+	   >
+	   <img src="./assets/gear_loader.svg" alt="">
+	 </div>
+	 <div class="visually-hidden generated-character-container">
+	    <button type="button" class="btn btn-secondary w-100 mb-3 text-center"
+	      onclick="copy2clipboard('generated-character')">
+	      <i class="fa-regular fa-copy"></i>
+	      Copy</button>
+	  <div class="form-floating">
+	    <textarea class="form-control" placeholder="Generated Character" id="generated-character"
+	      style=class="form-control"></textarea>
+	      <label for="generated-character">Characters</label>
+	  </div>
+	 </div>
+	</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+	<span>
+	  Character Details <i class="fa-solid fa-user-pen"></i>
+	</span>
+      </button>
+    </h2>
+    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+        <strong>Generate Character Details.</strong> Example: <code>{John, 35, Male, Determined}</code>
+	<form class="d-flex mt-3" action="" method="post" name="character_detail_form">
+	<div class="input-group">
+	  <span class="input-group-text" id="character-detail-prompt">Character</span>
+ 	 <input type="text" 
+	 class="form-control" aria-label="Character Detail"
+	 name="character_detail_prompt"
+	 aria-describedby="character-detail-prompt">
+	</div>
+	<button type="submit" 
+	  name="character_detail_btn"
+	  class="btn btn-primary ms-3">Generate</button>
+	</form>
+	<div class="mt-3">
+	 <div class="d-flex justify-content-center align-items-center visually-hidden" 
+	   id="character-detail-loader"
+	   >
+	   <img src="./assets/gear_loader.svg" alt="">
+	 </div>
+	 <div class="visually-hidden generated-character-detail-container">
+	    <button type="button" class="btn btn-secondary w-100 mb-3 text-center"
+	      onclick="copy2clipboard('generated-character-detail')">
+	      <i class="fa-regular fa-copy"></i>
+	      Copy</button>
+	  <div class="form-floating">
+	    <textarea class="form-control" placeholder="Generated Plot" id="generated-character-detail"
+	      style=""></textarea>
+	      <label for="generated-character-detail">Character Detail</label>
+	  </div>
+	   </div>
+	</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+	<span>
+	Environment <i class="fa-solid fa-mountain-sun"></i>
+	</span>
+      </button>
+    </h2>
+    <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+      <strong>Generate Environment using Story.</strong> Example: <code>In the year 2256, humanity has finally...</code>
+	<form class=" mt-3" action="" method="post" name="environment_form">
+	  <div class="form-floating">
+	    <textarea
+		style="resize:none;"
+	       oninput="autoTextAreaResize(this)"
+	       class="form-control" placeholder="Generated Environment" id="environment-prompt"
+	       name="environment_prompt"
+	      ></textarea>
+	      <label for="environment-prompt">Environment Description</label>
+	  </div>
+	<button type="submit" 
+	  name="environment_btn"
+	  class="btn btn-primary mt-3 w-100">Generate</button>
+	</form>
+	<div class="mt-3">
+	 <div class="d-flex justify-content-center align-items-center visually-hidden" 
+	   id="environment-loader"
+	   >
+	   <img src="./assets/gear_loader.svg" alt="">
+	 </div>
+	 <div class="visually-hidden generated-environment-container">
+	    <button type="button" class="btn btn-secondary w-100 mb-3 text-center"
+	      onclick="copy2clipboard('generated-environment')">
+	      <i class="fa-regular fa-copy"></i>
+	      Copy</button>
+	  <div class="form-floating">
+	    <textarea class="form-control" placeholder="Generated Environment" id="generated-environment"
+	      style=class="form-control"></textarea>
+	      <label for="generated-character">Environment</label>
+	  </div>
+	 </div>
+	</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+	<span>
+	Generate Image <i class="fa-solid fa-image"></i>
+	</span>
+      </button>
+    </h2>
+    <div id="collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+        <strong>Generate Image From Prompt.</strong> Example: <code>male, sci-fi, space-suit, 8k lighting, black hole</code>
+	<form class="d-flex flex-column mt-3" action="" method="post" name="image_form">
+	<div class="input-group">
+	  <span class="input-group-text" id="image-prompt">Prompt</span>
+ 	 <input type="text" 
+	 class="form-control" aria-label="Prompt"
+	 name="image_prompt"
+	 aria-describedby="image-prompt">
+	</div>
+	<div class="input-group mt-3">
+	  <span class="input-group-text" id="image-prompt">Negative Prompt</span>
+ 	 <input type="text" 
+	 class="form-control" aria-label="Prompt"
+	 name="image_negative_prompt"
+	 aria-describedby="image-negative-prompt">
+	</div>
+	<div class="input-group mt-3">
+	<label class="input-group-text" for="image-model">Model</label>
+	<select class="form-select" name="image_model" id="image-model">
+	</select>
+      </div>
+	<div class="input-group mt-3">
+	<label class="input-group-text" for="image-sample">Sampler</label>
+	<select class="form-select" name="image_sample" id="image-sample">
+	</select>
+      </div>
+	</select>
+	<div class="d-flex mt-3 align-items-center">
+	  <div class="w-100">
+	    <label for="image-width" class="form-label">Width</label>
+	    <input type="range"
+	     min="0" max="1024"
+	     value="512"
+	    class="form-range"
+	    name="image_width"
+	    oninput="document.querySelector('#image-width-value').value=this.value"
+	    id="image-width">
+	  </div>
+	  <div class="d-flex ms-3 mt-3">
+		<input type="number" value="512" min="0" max="1024"
+		oninput="document.querySelector('#image-width').value=this.value"
+		class="form-control" id="image-width-value">
+	  </div>
+	</div>
+	<div class="d-flex mt-3 align-items-center">
+	  <div class="w-100">
+	    <label for="image-height" class="form-label">Height</label>
+	    <input type="range"
+	     min="0" max="1024"
+	     value="512"
+	    class="form-range"
+	    name="image_height"
+	    oninput="document.querySelector('#image-height-value').value=this.value"
+	    id="image-height">
+	  </div>
+	  <div class="d-flex ms-3 mt-3">
+		<input type="number" value="512" min="0" max="1024"
+		oninput="document.querySelector('#image-height').value=this.value"
+		class="form-control" id="image-height-value">
+	  </div>
+	</div>
+	<div class="d-flex mt-3 align-items-center">
+	  <div class="w-100">
+	    <label for="image-sample-step" class="form-label">Sampling Steps</label>
+	    <input type="range"
+	     min="1" max="30"
+	     value="25"
+	    class="form-range"
+	    name="image_sampling_step"
+	    oninput="document.querySelector('#image-sample-step-value').value=this.value"
+	    id="image-sample-step">
+	  </div>
+	  <div class="d-flex ms-3 mt-3">
+		<input type="number" value="25" min="1" max="30" 
+		oninput="document.querySelector('#image-sample-step').value=this.value"
+		class="form-control" id="image-sample-step-value">
+	  </div>
+	</div>
+	<div class="d-flex mt-3 align-items-center">
+	  <div class="w-100">
+	    <label for="image-cfg" class="form-label">Guidance</label>
+	    <input type="range"
+	     min="1" max="20"
+	     value="7"
+	    class="form-range"
+	    name="image_cfg"
+	    oninput="document.querySelector('#image-cfg-value').value=this.value"
+	    id="image-cfg">
+	  </div>
+	  <div class="d-flex ms-3 mt-3">
+		<input type="number" value="7" min="1" max="20"
+		oninput="document.querySelector('#image-cfg').value=this.value"
+		class="form-control" id="image-cfg-value">
+	  </div>
+	</div>
+	<div class="input-group mt-3">
+	  <span class="input-group-text" id="image-seed">Seed</span>
+ 	 <input type="number" 
+	 class="form-control" aria-label="Prompt"
+	 name="image_seed" value="-1"
+	 aria-describedby="image-seed">
+	</div>
+	<button type="submit" 
+	  name="image_btn"
+	  onclick="reset_queue_btn(document.querySelector('#add-queue-btn'))"
+	  class="btn btn-primary mt-4">Generate</button>
+	</form>
+	<div class="mt-3">
+	 <div class="d-flex justify-content-center align-items-center visually-hidden" 
+	   id="image-loader"
+	   >
+	   <img src="./assets/gear_loader.svg" alt="">
+	 </div>
+	 <div class="visually-hidden generated-image-container">
+	  <div class="d-flex flex-column w-100 justify-content-center align-items-center">
+	  	<img src="" 
+		 class="img-fluid img-thumbnail rounded"
+		 id="image-output"
+		 alt="Output Image">
+		<button type="button" onclick="add2queue(this,document.querySelector('#image-output').src)"
+		  id="add-queue-btn"
+		  class="btn btn-primary mt-4 w-50">
+		  <span>Add</span> <i class="fa-solid fa-plus"></i>
+		</button>
+		<button type="button" onclick="download_img(document.querySelector('#image-output').src)"
+		  class="btn btn-success mt-3 w-50">
+		  <span>Download</span> <i class="fa-solid fa-download"></i>
+		</button>
+	    </div>
+	   </div>
+	</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
+	<span>
+	  Custom
+	 <i class="fa-solid fa-pen-to-square"></i> 
+	</span>
+      </button>
+    </h2>
+    <div id="collapseZero" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+        <strong>Custom Prompt for desired result.</strong> Example: <code>What is Life?</code>
+	<form class="d-flex mt-3" action="" method="post" name="custom_form">
+	<div class="input-group">
+	  <span class="input-group-text" id="custom-prompt">Prompt</span>
+ 	 <input type="text" 
+	 class="form-control" aria-label="Custom"
+	 name="custom_prompt"
+	 aria-describedby="custom-prompt">
+	</div>
+	<button type="submit" 
+	  name="custom_btn"
+	  class="btn btn-primary ms-3">Generate</button>
+	</form>
+	<div class="mt-3">
+	 <div class="d-flex justify-content-center align-items-center visually-hidden" 
+	   id="custom-loader"
+	   >
+	   <img src="./assets/gear_loader.svg" alt="">
+	 </div>
+	 <div class="visually-hidden generated-custom-container">
+	    <button type="button" class="btn btn-secondary w-100 mb-3 text-center"
+	      onclick="copy2clipboard('generated-custom')">
+	      <i class="fa-regular fa-copy"></i>
+	      Copy</button>
+	  <div class="form-floating">
+	    <textarea class="form-control" placeholder="Generated Custom" id="generated-custom"
+	      style=""></textarea>
+	      <label for="generated-custom">Result</label>
+	  </div>
+	   </div>
+	</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+	<span>
+	  Compile
+	  <i class="fa-solid fa-star"></i>
+	</span>
+      </button>
+    </h2>
+    <div id="collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordian">
+      <div class="accordion-body">
+	<h3 class="mt-2">Added Images: 
+	  <small class="text-body-secondary fs-5">~ Drag & Drop Images from here!</small> </h3>
+	<div id="added-images" class="d-flex mt-3 bg-body-tertiary rounded mb-3">
+		<img src="./assets/no_image.png" style="height:80px;width:80px;cursor:grab"
+		class="m-2 img-thumbnail" alt="added_image">
+	</div>
+		<textarea id="compile-text" class="">
+		</textarea>  
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>
