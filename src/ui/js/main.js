@@ -147,7 +147,11 @@ async function standard_process(type,prompt,btn,endpoint,remove,pre_data=""){
 	  document.querySelector(`.generated-${type}-container`).classList.add("visually-hidden")
 	}
 	const req = await axios.post(`/api/${endpoint}`,prompt)
-	document.querySelector(`#${type}-output`).src = await req.data.url
+	const response = await axios.get(await req.data.url, { responseType: 'arraybuffer' });
+	 const base64Image = btoa(new Uint8Array(response.data)
+	   .reduce((data, byte) => data + String.fromCharCode(byte), ''));
+	const dataURL = `data:${response.headers['content-type']};base64,${base64Image}`;
+	document.querySelector(`#${type}-output`).src = dataURL
       }
       // Enable Button
       if(btn) btn.disabled = false

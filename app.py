@@ -6,7 +6,6 @@ from src.model_list import models
 from src.sampler_list import samples
 from src.chat import Chat
 from src.image import Image, default_model, default_sampler
-from src.img2dataurl import image2dataurl
 
 
 app = Flask(__name__,static_url_path="/",static_folder="src/ui")
@@ -81,8 +80,7 @@ def GenerateImage():
     cfg = int(request.get_json()['image_cfg'])
     seed = int(request.get_json()['image_seed'])
     img = Image(prompt,nprompt,model,sample_step,sampler,cfg,width,height,seed)
-    dataurl = image2dataurl(img)
-    return jsonify({ "url": dataurl })
+    return jsonify({ "url": img })
 
 @app.route("/api/list")
 def Options():
