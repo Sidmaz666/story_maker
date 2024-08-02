@@ -17,7 +17,7 @@ def random_number():
 @app.route("/api/custom", methods=['POST'])
 def Custom():
     data = request.get_json()['prompt']
-    res = Chat(data).replace("</s>","")
+    res = Chat(data,"I want you to be a expert author that would be able to respond on any input that is given to you!").replace("</s>","")
     return jsonify({"data":res})
 
 @app.route("/api/plot", methods=['POST'])
@@ -25,7 +25,7 @@ def Plot():
     data = request.get_json()['prompt']
     seed = random_number()
     format = "(Plot:{plot})"
-    plot = Chat(f"I want you to write a short profound,unique,exciting,interesting and logical plot for a story of {data} in a specific format {format}. \"{seed}\" This is the number that represents the uniqueness of the plot,plot structure, and plot topics. DO NOT SHOW THE NUMBER IN THE PLOT OR IN YOUR RESPONSE!!! DO NOT SHOW THE UNIQUE NUMBER!!!.").replace("</s>","")
+    plot = Chat(data,f"I want you to write a short profound,unique,exciting,interesting and logical plot for a story from the input given to you in a specific format {format}. \"{seed}\" This is the number that represents the uniqueness of the plot,plot structure, and plot topics. DO NOT SHOW THE NUMBER IN THE PLOT OR IN YOUR RESPONSE!!! DO NOT SHOW THE UNIQUE NUMBER!!!.").replace("</s>","")
     return jsonify({"data":plot})
 
 @app.route("/api/story", methods=['POST'])
@@ -33,7 +33,7 @@ def Story():
     data = request.get_json()['prompt']
     seed = random_number()
     format = "(Story:{story})"
-    story = Chat(f"I want you to write a detail,profound,unique,exciting,interesting and logical story for the following plot: \n{data}\n Write the story in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the story,story structure,story environment, story characters names and story topics, DO NOT SHOW THE NUMBER IN THE STORY!!!.").replace("</s>","")
+    story = Chat(data,f"I want you to write a detail,profound,unique,exciting,interesting and logical story for the plot that has been given to you. Write the story in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the story,story structure,story environment, story characters names and story topics, DO NOT SHOW THE NUMBER IN THE STORY!!!.").replace("</s>","")
     return jsonify({"data":story})
 
 @app.route("/api/continue", methods=['POST'])
@@ -41,7 +41,7 @@ def ContinueStory():
     data = request.get_json()['prompt']
     seed = random_number()
     format = "(Story:{story})"
-    story = Chat(f"I want you to continue writing or expanding a detail,profound,unique,exciting,interesting and logical story for the following half story: \n{data}\n Write the story in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the story,story structure,story environment, story characters names and story topics, DO NOT SHOW THE NUMBER IN THE STORY!!!.").replace("</s>","")
+    story = Chat(data,f"I want you to continue writing or expanding a detail,profound,unique,exciting,interesting and logical story for the unfinished story that has been given as a input. Write the story in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the story,story structure,story environment, story characters names and story topics, DO NOT SHOW THE NUMBER IN THE STORY!!!.").replace("</s>","")
     return jsonify({"data":story})
 
 @app.route("/api/character", methods=['POST'])
@@ -49,7 +49,7 @@ def CharacterDesign():
     data = request.get_json()['prompt']
     seed = random_number()
     format = "(Character:{character_name,character_age,character_gender,character_personality})"
-    character = Chat(f"I want you to design characters of living,non-living,individual or groups by extracting all the characters and give them proper name(only if character name is not mentioned in the story), personality, age(give a proper age to every character even if the character is non-living object, THE AGE CANNOT BE UNKNOWN!!!) and gender from the following story: \n{data}\n Write the Characters in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the characters name(Come up with a Character name if does not exist!), age, gender and personality, DON'T SHOW THE UNIQUE NUMBER!!!!, DO NOT SHOW THE NUMBER IN THE Characters OR IN YOUR RESPONSE!!! DO NOT SHOW THE UNIQUE NUMBER!!!.").replace("</s>","")
+    character = Chat(data,f"I want you to design characters of living,non-living,individual or groups by extracting all the characters and give them proper name(only if character name is not mentioned in the story), personality, age(give a proper age to every character even if the character is non-living object, THE AGE CANNOT BE UNKNOWN!!!) and gender from the story given to you as an input. Write the Characters in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the characters name(Come up with a Character name if does not exist!), age, gender and personality, DON'T SHOW THE UNIQUE NUMBER!!!!, DO NOT SHOW THE NUMBER IN THE Characters OR IN YOUR RESPONSE!!! DO NOT SHOW THE UNIQUE NUMBER!!!.").replace("</s>","")
     return jsonify({"data":character})
 
 @app.route("/api/character_detail", methods=['POST'])
@@ -57,7 +57,7 @@ def CharacterDetail():
     data = request.get_json()['prompt']
     seed = random_number()
     format = "(CharacterDetail:{character_detail})"
-    character = Chat(f"I want you tell every possible detail about a characters of living,non-living,individual or groups by analyzing the character and give them proper height, weight, body shape, skin color, face shape, hair type, hair color, hair length, eyes shape, eyes color, eyes size, mouth shape size and color and much more facial and body detail for the following character: \n{data}\n Write the CharacterDetail in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the character detail, DO NOT SHOW THE NUMBER IN THE CharacterDetail!!!.").replace("</s>","")
+    character = Chat(data,f"I want you tell every possible detail about a characters of living,non-living,individual or groups by analyzing the character and give them proper height, weight, body shape, skin color, face shape, hair type, hair color, hair length, eyes shape, eyes color, eyes size, mouth shape size and color and much more facial and body detail for the character from the input that has been given to you. Write the CharacterDetail in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the character detail, DO NOT SHOW THE NUMBER IN THE CharacterDetail!!!.").replace("</s>","")
     return jsonify({"data":character})
 
 @app.route("/api/environment", methods=['POST'])
@@ -65,7 +65,7 @@ def EnvironmentDesign():
     data = request.get_json()['prompt']
     seed = random_number()
     format = "(Environment:{environment_name,environment_terrain,environment_colors,environment_lights,environment_objects}"
-    environments = Chat(f"I want you to design an environment by extracting all the possible environments and give them proper name(only if environment name is not mentioned in the story), environment terrain, environment colors, environment lights and environment objects from the following story: \n{data}\n Write the Environment in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the Environment name, terrain, colors, lights and objects, DO NOT SHOW THE NUMBER IN THE Environments OR IN YOUR RESPONSE!!! DO NOT SHOW THE UNIQUE NUMBER!!!.").replace("</s>","")
+    environments = Chat(data,f"I want you to design an environment by extracting all the possible environments and give them proper name(only if environment name is not mentioned in the story), environment terrain, environment colors, environment lights and environment objects from the story that is given to you as an input. Write the Environment in a specific format {format}\n. \"{seed}\" This is the number that represents the uniqueness of the Environment name, terrain, colors, lights and objects, DO NOT SHOW THE NUMBER IN THE Environments OR IN YOUR RESPONSE!!! DO NOT SHOW THE UNIQUE NUMBER!!!.").replace("</s>","")
     return jsonify({"data":environments})
 
 @app.route("/api/img", methods=['POST'])
