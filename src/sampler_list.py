@@ -1,7 +1,10 @@
 samples = list(
     [
-        "Euler",
+        "DPM++ 2M Karras",
+        "DPM++ SDE Karras",
+        "DPM++ 2M SDE Exponential",
         "Euler a",
+        "Euler",
         "LMS",
         "Heun",
         "DPM2",
@@ -9,16 +12,23 @@ samples = list(
         "DPM++ 2S a",
         "DPM++ 2M",
         "DPM++ SDE",
+        "DPM++ 2M SDE",
+        "DPM++ 2M SDE Heun",
+        "DPM++ 2M SDE Heun Karras",
+        "DPM++ 2M SDE Heun Exponential",
+        "DPM++ 3M SDE",
+        "DPM++ 3M SDE Karras",
+        "DPM++ 3M SDE Exponential",
         "DPM fast",
         "DPM adaptive",
         "LMS Karras",
         "DPM2 Karras",
         "DPM2 a Karras",
         "DPM++ 2S a Karras",
-        "DPM++ 2M Karras",
-        "DPM++ SDE Karras",
+        "Restart",
         "DDIM",
         "PLMS",
+        "UniPC",
     ]
 )
 
